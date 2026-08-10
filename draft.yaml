@@ -1,0 +1,56 @@
+models:
+  Department:
+    name: string
+    description: nullable text
+    softDeletes
+    relationships:
+      hasMany: User
+
+  LeaveType:
+    name: string
+    color: string:7 default:'#3B82F6'
+    max_days_per_year: unsignedInteger default:0
+    requires_attachment: boolean default:false
+    is_active: boolean default:true
+    softDeletes
+    relationships:
+      hasMany: LeaveBalance
+      hasMany: LeaveRequest
+
+  LeaveBalance:
+    user_id: id foreign
+    leave_type_id: id foreign
+    year: unsignedSmallInteger index
+    entitled_days: decimal:5,2 default:0
+    used_days: decimal:5,2 default:0
+    adjustment_days: decimal:5,2 default:0
+    relationships:
+      belongsTo: User
+      belongsTo: LeaveType
+
+  LeaveRequest:
+    user_id: id foreign
+    leave_type_id: id foreign
+    start_date: date
+    end_date: date
+    days_count: decimal:5,2
+    reason: nullable text
+    status: string:20 default:'pending'
+    attachment_path: nullable string
+    decided_by: nullable id:users
+    decided_at: nullable timestamp
+    rejection_reason: nullable text
+    softDeletes
+    relationships:
+      belongsTo: User
+      belongsTo: LeaveType
+      hasMany: ApprovalLog
+
+  ApprovalLog:
+    leave_request_id: id foreign
+    user_id: id foreign
+    action: string:20
+    comment: nullable text
+    relationships:
+      belongsTo: LeaveRequest
+      belongsTo: User
