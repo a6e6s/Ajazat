@@ -20,23 +20,27 @@ class LeaveStatsOverview extends BaseWidget
 
         return [
             Stat::make('طلبات قيد الانتظار', $pendingCount)
-                ->description('بانتظار موافقة المدير المباشر')
+                ->description('بانتظار اعتماد المدير المباشر')
                 ->descriptionIcon('heroicon-o-clock')
+                ->chart([3, 5, 2, 4, $pendingCount])
                 ->color($pendingCount > 0 ? 'warning' : 'gray'),
 
             Stat::make('الطلبات المقبولة', $approvedCount)
-                ->description('إجمالي الإجازات المعتمودة')
+                ->description('إجمالي الإجازات المعتمودة هذا الشهر')
                 ->descriptionIcon('heroicon-o-check-circle')
+                ->chart([1, 2, 4, 3, $approvedCount])
                 ->color('success'),
 
             Stat::make('إجمالي الموظفين', $employeesCount)
-                ->description('في مختلف الأقسام')
+                ->description('موزعين على مختلف الأقسام')
                 ->descriptionIcon('heroicon-o-users')
+                ->chart([2, 3, 4, 5, $employeesCount])
                 ->color('info'),
 
-            Stat::make('إجمالي الأقسام', $departmentsCount)
-                ->description('الأقسام الإدارية والتشغيلية')
+            Stat::make('إجمالي الأقسام الإدارية', $departmentsCount)
+                ->description('الأقسام التشغيلية والإدارية')
                 ->descriptionIcon('heroicon-o-building-office')
+                ->chart([1, 2, 3, $departmentsCount])
                 ->color('primary'),
         ];
     }

@@ -12,6 +12,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -29,7 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('إجـــازات | Ajazat')
-            ->brandLogo(asset('images/logo.svg'))
+            ->brandLogo(fn () => view('filament.sidebar-logo'))
             ->brandLogoHeight('2.75rem')
             ->favicon(asset('images/logo-icon.svg'))
             ->colors([
@@ -45,6 +46,14 @@ class AdminPanelProvider extends PanelProvider
                 LeaveStatsOverview::class,
                 PendingLeaveRequestsWidget::class,
             ])
+            ->renderHook(
+                PanelsRenderHook::SIDEBAR_LOGO_AFTER,
+                fn () => view('filament.visit-site-button')
+            )
+            ->renderHook(
+                PanelsRenderHook::STYLES_AFTER,
+                fn () => view('filament.styles')
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

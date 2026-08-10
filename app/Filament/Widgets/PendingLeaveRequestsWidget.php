@@ -18,7 +18,7 @@ class PendingLeaveRequestsWidget extends BaseWidget
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?string $heading = 'أحدث الطلبات المعلقة (قيد الانتظار)';
+    protected static ?string $heading = 'أحدث طلبات الإجازات المعلقة (قيد الانتظار)';
 
     public function table(Table $table): Table
     {
@@ -32,7 +32,12 @@ class PendingLeaveRequestsWidget extends BaseWidget
             ->columns([
                 TextColumn::make('user.name')
                     ->label('الموظف')
-                    ->searchable(),
+                    ->searchable()
+                    ->weight('bold'),
+                TextColumn::make('user.department.name')
+                    ->label('القسم')
+                    ->badge()
+                    ->color('info'),
                 TextColumn::make('leaveType.name')
                     ->label('نوع الإجازة')
                     ->badge(),
@@ -44,18 +49,21 @@ class PendingLeaveRequestsWidget extends BaseWidget
                     ->date(),
                 TextColumn::make('days_count')
                     ->label('الأيام')
-                    ->numeric(),
+                    ->numeric()
+                    ->badge()
+                    ->color('gray'),
                 TextColumn::make('reason')
                     ->label('السبب')
-                    ->limit(30),
+                    ->limit(35),
             ])
             ->recordActions([
                 Action::make('approve')
-                    ->label('موافقة')
+                    ->label('اعتماد / موافقة')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
                     ->modalHeading('الموافقة على طلب الإجازة')
+                    ->modalDescription('هل أنت تأكد من اعتماد طلب الإجازة؟ سيتم خصم الأيام من رصيد الموظف.')
                     ->form([
                         Textarea::make('comment')
                             ->label('ملاحظات (اختياري)')
@@ -69,7 +77,7 @@ class PendingLeaveRequestsWidget extends BaseWidget
                         );
 
                         Notification::make()
-                            ->title('تمت الموافقة بنجاح')
+                            ->title('تمت الموافقة على طلب الإجازة بنجاح')
                             ->success()
                             ->send();
                     }),
@@ -94,7 +102,7 @@ class PendingLeaveRequestsWidget extends BaseWidget
                         );
 
                         Notification::make()
-                            ->title('تم رفض الطلب')
+                            ->title('تم رفض طلب الإجازة')
                             ->danger()
                             ->send();
                     }),
