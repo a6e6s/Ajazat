@@ -14,8 +14,7 @@ models:
     is_active: boolean default:true
     softDeletes
     relationships:
-      hasMany: LeaveBalance
-      hasMany: LeaveRequest
+      hasMany: LeaveBalance, LeaveRequest
 
   LeaveBalance:
     user_id: id foreign
@@ -25,8 +24,7 @@ models:
     used_days: decimal:5,2 default:0
     adjustment_days: decimal:5,2 default:0
     relationships:
-      belongsTo: User
-      belongsTo: LeaveType
+      belongsTo: User, LeaveType
 
   LeaveRequest:
     user_id: id foreign
@@ -42,8 +40,7 @@ models:
     rejection_reason: nullable text
     softDeletes
     relationships:
-      belongsTo: User
-      belongsTo: LeaveType
+      belongsTo: User, LeaveType
       hasMany: ApprovalLog
 
   ApprovalLog:
@@ -52,5 +49,4 @@ models:
     action: string:20
     comment: nullable text
     relationships:
-      belongsTo: LeaveRequest
-      belongsTo: User
+      belongsTo: LeaveRequest, User

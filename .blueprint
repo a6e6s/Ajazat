@@ -1,2 +1,23 @@
+created:
+    - database/factories/DepartmentFactory.php
+    - database/factories/LeaveTypeFactory.php
+    - database/factories/LeaveBalanceFactory.php
+    - database/factories/LeaveRequestFactory.php
+    - database/factories/ApprovalLogFactory.php
+    - database/migrations/2026_08_10_075634_create_departments_table.php
+    - database/migrations/2026_08_10_075635_create_leave_types_table.php
+    - database/migrations/2026_08_10_075636_create_leave_balances_table.php
+    - database/migrations/2026_08_10_075637_create_leave_requests_table.php
+    - database/migrations/2026_08_10_075638_create_approval_logs_table.php
+    - app/Models/Department.php
+    - app/Models/LeaveType.php
+    - app/Models/LeaveBalance.php
+    - app/Models/LeaveRequest.php
+    - app/Models/ApprovalLog.php
 models:
     User: { name: string, email: string, email_verified_at: 'datetime nullable', password: string, remember_token: 'string nullable', two_factor_secret: 'text nullable', two_factor_recovery_codes: 'text nullable', two_factor_confirmed_at: 'datetime nullable' }
+    Department: { name: string, description: 'nullable text', softdeletes: softDeletes, relationships: { hasMany: User } }
+    LeaveType: { name: string, color: "string:7 default:'#3B82F6'", max_days_per_year: 'unsignedInteger default:0', requires_attachment: 'boolean default:false', is_active: 'boolean default:true', softdeletes: softDeletes, relationships: { hasMany: 'LeaveBalance, LeaveRequest' } }
+    LeaveBalance: { user_id: 'id foreign', leave_type_id: 'id foreign', year: 'unsignedSmallInteger index', entitled_days: 'decimal:5,2 default:0', used_days: 'decimal:5,2 default:0', adjustment_days: 'decimal:5,2 default:0', relationships: { belongsTo: 'User, LeaveType' } }
+    LeaveRequest: { user_id: 'id foreign', leave_type_id: 'id foreign', start_date: date, end_date: date, days_count: 'decimal:5,2', reason: 'nullable text', status: "string:20 default:'pending'", attachment_path: 'nullable string', decided_by: 'nullable id:users', decided_at: 'nullable timestamp', rejection_reason: 'nullable text', softdeletes: softDeletes, relationships: { belongsTo: 'User, LeaveType', hasMany: ApprovalLog } }
+    ApprovalLog: { leave_request_id: 'id foreign', user_id: 'id foreign', action: 'string:20', comment: 'nullable text', relationships: { belongsTo: 'LeaveRequest, User' } }
